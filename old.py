@@ -139,15 +139,15 @@ def parse():
                 if priority > last_priority:
                     last_priority = priority
                     solver_index = index
-        if solver_index == 0: return list[0]
+        if solver_index == 0: return list[0] # type: ignore
         operator = list[solver_index]
         result = 0
         first_number = better_float(list[solver_index - 1])
         second_number = better_float(list[solver_index + 1])
         if first_number == None:
-            return display_error(f"{first_number} is not a valid number.")
+            return display_error(f"{first_number} is not a valid number.") # type: ignore
         if second_number == None:
-            return display_error(f"{second_number} is not a valid number.")
+            return display_error(f"{second_number} is not a valid number.") # type: ignore
         if operator == "+":
             result = first_number + second_number
         elif operator == "-":
@@ -156,7 +156,7 @@ def parse():
             result = first_number / second_number
         elif operator == "x":
             result = first_number * second_number
-        list[solver_index - 1] = result
+        list[solver_index - 1] = result # type: ignore
         list.pop(solver_index)
         list.pop(solver_index)
         
