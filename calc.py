@@ -11,8 +11,8 @@ import re
 
 ######################### Static Variables
 button_characters = [
-    "",
-    "",
+    "Next",
+    "Previous",
     "Back",
     "Clear",
     "(",
@@ -30,14 +30,14 @@ button_characters = [
     "1",
     "2",
     "3",
+    "—",
     "-",
-    ".",
     "0",
-    "",
+    ".",
     "=",
 ]
-operators = ["%", "/", "*", "-", "+"]
-operators_priority = {"%": 2, "/": 2, "*": 2, "-": 1, "+": 1}
+operators = ["%", "/", "*", "—", "+"]
+operators_priority = {"%": 2, "/": 2, "*": 2, "—": 1, "+": 1}
 
 ######################### Create the main window.
 window = tk.Tk()
@@ -70,6 +70,8 @@ def modify_equation_string(string: str) -> str:
     new_string = string
     new_string = re.sub("(.{15})", "\\1\n", new_string, 0, re.DOTALL)
     new_string = new_string.removesuffix(".0")
+    for operator in operators:
+        new_string = new_string.replace(operator, f" {operator} ")
     return new_string
 
 
@@ -80,12 +82,28 @@ main_frame.configure(border=10)
 
 
 ######################### Create the text label.
-label = ttk.Label(main_frame, text="111122223333444\n45555", width=15)
+label = ttk.Label(main_frame, width=20)
 label.grid(row=0, column=0, columnspan=8)
-label.configure(padding=10, font=("Arial", 25))
+label.configure(padding=10, font=("Arial", 20))
+
+
+######################### Function to add a character to the current label.
+current_equation = "0"
+equation_history = []
+
+
+# Add a character to the equation.
+def add_character_to_equation(character: str) -> None:
+    global current_equation
+    if current_equation == "0":
+        current_equation = ""
+    current_equation = f"{current_equation}{character}"
+    label.configure(text=modify_equation_string(current_equation))
+    return None
 
 
 ######################### Create buttons.
+# Function to create the calculator buttons.
 def create_buttons():
     column_index = 0
     last_row = -1
@@ -98,15 +116,18 @@ def create_buttons():
         column_index = column_index + 1
         column = column_index
 
-        action = character.replace("IMG!", "")
-        button = ttk.Button(main_frame, text=action)
+        def command_function(character=character):
+            add_character_to_equation(character)
+
+        button = ttk.Button(main_frame, text=character, command=command_function)
         button.grid(row=row, column=column, sticky="nesw")
 
-        if action == "":
+        if character == "":
             button.grid_remove()
 
 
-create_buttons()
+create_buttons()  # Create the calculator buttons.
+
 
 ######################### Start the process.
 window.mainloop()
